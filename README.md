@@ -22,6 +22,6 @@ IMPROVED 3rd version of Nissim engine: NiCim. working with UCI protocol and Bitb
 - Chess Programming : https://www.youtube.com/watch?v=QUNP-UjujBM&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs&ab_channel=ChessProgramming
 - Logic Crazy Chess: https://www.youtube.com/watch?v=a5IGltn95Bk&ab_channel=LogicCrazyChess
 
-## additional Credits and Thanks:
-- Noga Regev for the AMAZING art work of Nicim Icon. 
+## Additional Credits and Thanks:
+- Noga Regev for the AMAZING artwork of Nicim Icon. 
 ![alt text](https://github.com/yodatk/NiCimEngine/blob/master/resources/NiCim_Logo.png?raw=true)
