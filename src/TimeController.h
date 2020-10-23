@@ -66,7 +66,7 @@ extern int isStopped;
  * get the current time in MS
  * @return long represents time in milliseconds
  */
-long getTimeMs();
+int getTimeMs();
 
 /**
  * checking if there is input wating from user or GUI controller

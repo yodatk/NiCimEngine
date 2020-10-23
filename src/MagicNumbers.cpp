@@ -1,4 +1,4 @@
-#include "magicNumbers.h"
+#include "MagicNumbers.h"
 #include <cstdio>
 #include <cstring>
 

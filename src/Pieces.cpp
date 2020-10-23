@@ -1,4 +1,4 @@
-#include "pieces.h"
+#include "Pieces.h"
 
 /**
  * Array of all pieces represented by ascii characters

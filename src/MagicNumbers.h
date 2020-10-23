@@ -2,8 +2,8 @@
 #ifndef NISSIMENGINECPP_MAGICNUMBERS_H
 #define NISSIMENGINECPP_MAGICNUMBERS_H
 
-#include "attacks.h"
-#include "Randomnubers.h"
+#include "Attacks.h"
+#include "RandomNumbers.h"
 
 /**
  * find magic numbers according to random state, and given params

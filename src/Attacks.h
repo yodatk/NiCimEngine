@@ -4,8 +4,8 @@
 #ifndef NISSIMENGINECPP_ATTACKS_H
 #define NISSIMENGINECPP_ATTACKS_H
 
-#include "bitboard.h"
-#include "EnumsAndConstans.h"
+#include "Bitboard.h"
+#include "EnumsAndConstants.h"
 
 /**
  * bitboard to represents all squares that are not on A file

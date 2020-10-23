@@ -1,5 +1,5 @@
 
-#include "timeController.h"
+#include "TimeController.h"
 
 
 /**
@@ -56,7 +56,7 @@ int isStopped = 0;
  * get the current time in MS
  * @return long represents time in milliseconds
  */
-long getTimeMs() {
+int getTimeMs() {
 #ifdef WIN64
     return GetTickCount();
 #else

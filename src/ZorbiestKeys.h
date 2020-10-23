@@ -5,12 +5,12 @@
 #ifndef NISSIMENGINECPP_ZORBIESTKEYS_H
 #define NISSIMENGINECPP_ZORBIESTKEYS_H
 
-#include "board.h"
+#include "Board.h"
 
-#include "Randomnubers.h"
+#include "RandomNumbers.h"
 
 
-#include "EnumsAndConstans.h"
+#include "EnumsAndConstants.h"
 
 
 /**

@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "Search.h"
-#include "evaluation.h"
+#include "Evaluation.h"
 
 
 /**

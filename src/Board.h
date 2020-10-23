@@ -8,12 +8,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
-#include "pieces.h"
-#include "bitboard.h"
-#include "squares.h"
-#include "EnumsAndConstans.h"
-#include "zorbiestKeys.h"
-#include "attacks.h"
+#include "Pieces.h"
+#include "Bitboard.h"
+#include "Squares.h"
+#include "EnumsAndConstants.h"
+#include "ZorbiestKeys.h"
+#include "Attacks.h"
 
 /**
  * macro to copy Board state

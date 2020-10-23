@@ -9,7 +9,7 @@
 #include <sys/time.h>
 #endif
 
-#include "uci.h"
+#include "Uci.h"
 
 
 /**

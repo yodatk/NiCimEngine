@@ -18,8 +18,8 @@
 #define MATE_VALUE 49000
 #define MATE_SCORE 48000
 
-#include "perftTest.h"
-#include "evaluation.h"
+#include "PerftTest.h"
+#include "Evaluation.h"
 
 /**
  * MOST-VALUABLE-VICTIM LEAST-VALUABLE-ATTACKER Table

@@ -1,7 +1,7 @@
 /**
  * All the attacks movement calculation for slider pieces, and non slider pieces
  */
-#include "attacks.h"
+#include "Attacks.h"
 
 
 /**

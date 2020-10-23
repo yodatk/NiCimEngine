@@ -1,4 +1,4 @@
-#include "board.h"
+#include "Board.h"
 
 /**
  * 12 bitBoard: for each color 6 type of pieces

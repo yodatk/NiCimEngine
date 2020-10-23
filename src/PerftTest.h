@@ -9,8 +9,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include "board.h"
-#include "timeController.h"
+#include "Board.h"
+#include "TimeController.h"
 
 /**
  * counter of all the "leaf" positions in a search

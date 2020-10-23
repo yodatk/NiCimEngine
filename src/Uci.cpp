@@ -1,5 +1,5 @@
 
-#include "uci.h"
+#include "Uci.h"
 
 /**
  * Parsing a given move as string to the proper encoded move as Integer

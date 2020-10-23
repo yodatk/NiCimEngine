@@ -1,5 +1,5 @@
 
-#include "bitboard.h"
+#include "Bitboard.h"
 
 
 /**

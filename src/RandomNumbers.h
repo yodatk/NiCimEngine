@@ -5,7 +5,7 @@
 #ifndef NISSIMENGINECPP_RANDOMNUBERS_H
 #define NISSIMENGINECPP_RANDOMNUBERS_H
 
-#include "bitboard.h"
+#include "Bitboard.h"
 
 
 /**

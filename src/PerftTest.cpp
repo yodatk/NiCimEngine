@@ -1,5 +1,5 @@
 
-#include "perftTest.h"
+#include "PerftTest.h"
 
 /**
  * counter of all the "leaf" positions in a search
