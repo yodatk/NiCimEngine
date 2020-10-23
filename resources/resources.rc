@@ -1,0 +1,6 @@
+#ifndef _resource_rc
+#define _resource_rc
+
+MAINICON ICON "NiCim_128-128.ico"
+
+#endif
