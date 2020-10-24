@@ -7,6 +7,8 @@
 #include "Board.h"
 #include "NnueEval.h"
 
+#define NNUE_FILE "nn-04cf2b4ed1da.nnue"
+
 /**
  * enum for game phases to flexible evaluation
  */
@@ -14,6 +16,14 @@ enum {
     OPENING,
     ENDGAME,
     MIDDLEGAME
+};
+
+/**
+ * enum to symbolize white and black kings indexes in the nnue pieces array
+ */
+enum {
+    WHITE_KING,
+    BLACK_KING,
 };
 
 /**
@@ -28,6 +38,15 @@ enum {
     KING
 };
 
+/**
+ * array to convert pieces value to NNUE evaluation of stockfish
+ */
+extern int nnuePieces[12];
+
+/**
+ * array to convert squares value to NNUE evaluation of stockfish
+ */
+extern int nnueSquares[64];
 
 /**
  * 2D array to get piece value [game phase][piece]
@@ -191,6 +210,11 @@ static inline int evaluate() {
 
     int doublePawns;
 
+    // arrays and fields for stockfish nnue evaluation
+    int pieces[33];
+    int squares[33];
+    int index = 2;
+
     for (int pieceType = P; pieceType <= k; pieceType++) {
         // init piece bitboard copy
         bitboard = bitboards[pieceType];
@@ -205,8 +229,25 @@ static inline int evaluate() {
             scoreOpening += materialScore[OPENING][piece];
             scoreEndgame += materialScore[ENDGAME][piece];
 
+            // converting board and pieces state to nnue format
+
+            if (piece == K) {
+                // handeling white king nnue
+                pieces[WHITE_KING] = nnuePieces[piece];
+                squares[WHITE_KING] = nnueSquares[square];
+            } else if (piece == k) {
+                // handeling black king nnue
+                pieces[BLACK_KING] = nnuePieces[piece];
+                squares[BLACK_KING] = nnueSquares[square];
+            } else {
+                // converting rest of the pieces to converted squares for nnue evaluation
+                pieces[index] = nnuePieces[piece];
+                squares[index] = nnueSquares[square];
+                index++;
+            }
+
             // score positional piece scores, and special cases pieces
-            switch (piece) {
+            /* switch (piece) {
                 // evaluate WHITE pawns
                 case P:
                     // positional scoring
@@ -409,12 +450,19 @@ static inline int evaluate() {
                     scoreEndgame -= countBits(kingAttacks[square] & occupancies[BLACK]) * KING_SHIELD_BONUS;
 
                     break;
-            }
+            }*/
 
             // removing piece
             setBitOff(bitboard, square);
         }
     }
+
+    // set final zero on both nnue array
+    pieces[index] = 0;
+    squares[index] = 0;
+
+    int nnueScore = evaluateNNUE(side,pieces,squares) *5 /4;
+    (side == WHITE) ? (nnueScore) : (nnueScore=-nnueScore);
 
 
     // interpolate score in the middle-game
@@ -427,10 +475,72 @@ static inline int evaluate() {
     } else if (gamePhase == ENDGAME) {
         score = scoreEndgame;
     }
-
+    score += nnueScore;
 
     // return final evaluation based on side
     return (side == WHITE) ? score : -score;
+}
+
+//
+//// init NNUE input
+static inline void nnue_input(int *pieces, int *squares) {
+    U64 bitboard;
+    int piece, square;
+    int index = 2;
+
+    // loop over piece bitboards
+    for (int bb_piece = P; bb_piece <= k; bb_piece++) {
+        // init piece bitboard copy
+        bitboard = bitboards[bb_piece];
+
+        // loop over pieces within a bitboard
+        while (bitboard) {
+            // init piece
+            piece = bb_piece;
+
+            // init square
+            square = getLSBIndex(bitboard);
+
+            //printf("piece: %c  piece code: %d  square index: %d  square: %s\n", asciiPieces[piece], piece, square,
+            //       squareToCoordinates[square]);
+
+            if (piece == K) {
+                /* convert white king piece code to stockfish piece code and
+                   store it at the first index of pieces array
+                */
+                pieces[0] = nnuePieces[piece];
+
+                /* convert white king square index to stockfish square index and
+                   store it at the first index of pieces array
+                */
+                squares[0] = nnueSquares[square];
+            } else if (piece == k) {
+                /* convert black king piece code to stockfish piece code and
+                   store it at the second index of pieces array
+                */
+                pieces[1] = nnuePieces[piece];
+
+                /* convert black king square index to stockfish square index and
+                   store it at the second index of pieces array
+                */
+                squares[1] = nnueSquares[square];
+            } else {
+                /*  convert all the rest of piece code with corresponding square codes
+                    to stockfish piece codes and square indicies respectively
+                */
+                pieces[index] = nnuePieces[piece];
+                squares[index] = nnueSquares[square];
+                index++;
+            }
+
+            // pop LS1B
+            setBitOff(bitboard, square);
+        }
+    }
+
+    // end arrays with sero terminating character
+    pieces[index] = 0;
+    squares[index] = 0;
 }
 
 #endif //NISSIMENGINECPP_EVALUATION_H

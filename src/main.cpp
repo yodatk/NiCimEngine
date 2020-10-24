@@ -30,40 +30,52 @@ void initAll() {
 
     // init Hash Table with default size value
     initHashTable(DEFAULT_HASH_SIZE);
+    initNNUE(NNUE_FILE);
 }
 
 /**
  * debug purpuses main
  */
- int mainDebug(){
-     initAll();
-     parseFen(start_position);
-     printBoard();
-     // loaded file
-     initNNUE("nn-04cf2b4ed1da.nnue");
-     printf("nnue eval: %d ",evaluateFENNNUE(start_position));
-     return 0;
- }
-
- int mainRelease(){
-
-     initAll();
+int mainDebug() {
+    initAll();
+    parseFen(start_position);
+    printBoard();
+    // loaded file
+    initNNUE("nn-04cf2b4ed1da.nnue");
 
 
-     UCILoop();
+    int pieces[33];
+    int squares[33];
+    nnue_input(pieces, squares);
+    int score = evaluateNNUE(side, pieces, squares);
+    printf("nnue eval: %d\n", evaluateFENNNUE(start_position));
+    printf("score: %d\n", score);
 
-     // free allocated hash
-     free(hashTable);
+    int eval_score = evaluate();
+    printf("eval_score::: %d\n", eval_score);
 
-     return 0;
- }
+    return 0;
+}
+
+int mainRelease() {
+
+    initAll();
+
+
+    UCILoop();
+
+    // free allocated hash
+    free(hashTable);
+
+    return 0;
+}
 
 /**
  * MAIN
  */
 int main() {
 
-     return mainDebug();
+    // return mainDebug();
 
-    //return mainRelease();
+    return mainRelease();
 }
