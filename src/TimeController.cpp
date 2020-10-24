@@ -27,7 +27,7 @@ int time = -1;
 /**
  * Hold current increment for move
  */
-int inc = 0;
+int increment = 0;
 
 /**
  * Start time of making the move
@@ -167,7 +167,7 @@ void resetTimeControl() {
     movesToGo = 30;
     moveTime = -1;
     time = -1;
-    inc = 0;
+    increment = 0;
     startTime = 0;
     stopTime = 0;
     isTimeSet = 0;

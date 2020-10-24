@@ -187,23 +187,6 @@ static inline int getGamePhaseScore() {
  * @return score of the current board
  */
 static inline int evaluate() {
-    // get game phase score
-    int gamePhaseScore = getGamePhaseScore();
-
-    // determine game phase
-    int gamePhase = -1;
-
-    if (gamePhaseScore > openingPhaseScore) {
-        gamePhase = OPENING;
-    } else if (gamePhaseScore < endgamePhaseScore) {
-        gamePhase = ENDGAME;
-    } else {
-        gamePhase = MIDDLEGAME;
-    }
-
-
-    int score, scoreOpening = 0, scoreEndgame = 0;
-
     U64 bitboard;
 
     int piece, square;
@@ -244,26 +227,8 @@ static inline int evaluate() {
     pieces[index] = 0;
     squares[index] = 0;
 
-    // evaluating with NNUE
-    int nnueScore = evaluateNNUE(side, pieces, squares);
-
-
-
-    // interpolate score in the middle-game
-    if (gamePhase == MIDDLEGAME) {
-        score = (scoreOpening * gamePhaseScore +
-                 scoreEndgame * (openingPhaseScore - gamePhaseScore)) /
-                openingPhaseScore;
-    } else if (gamePhase == OPENING) {
-        score = scoreOpening;
-    } else if (gamePhase == ENDGAME) {
-        score = scoreEndgame;
-    }
-    if (gamePhase != ENDGAME) {
-        return nnueScore;
-    } else {
-        return (side == WHITE) ? score : -score;
-    }
+    // evaluating with NNUE, with fifty move rule considiration
+    return evaluateNNUE(side, pieces, squares) * (100-fiftyRuleCounter)/100;
 }
 
 static inline int evaluateOnLowTime() {

@@ -27,8 +27,8 @@ static inline int negamax(int alpha, int beta, int depth) {
 
     int hashFlag = ALPHA;
 
-    if (ply && isRepetition()) {
-        // if repetition is found -> return draw value
+    if ((ply && isRepetition()) || fiftyRuleCounter >= 100) {
+        // if repetition is found \ 50 move rule found -> return draw value
         return 0;
     }
 
@@ -212,7 +212,7 @@ static inline int negamax(int alpha, int beta, int depth) {
             // PV node (position), writing it to PV table
             alpha = score;
             pvTable[ply][ply] = moveList->moves[count];
-            for (int nextPly = ply + 1; nextPly < pvLength[ply + 1]; nextPly++){
+            for (int nextPly = ply + 1; nextPly < pvLength[ply + 1]; nextPly++) {
                 // copy move from deeper ply into a current ply's line
                 pvTable[ply][nextPly] = pvTable[ply + 1][nextPly];
             }
@@ -239,12 +239,10 @@ static inline int negamax(int alpha, int beta, int depth) {
 
     if (legalMoves == 0) {
         // we don't have any legal moves to make in the current postion -> check for mate or stalmate
-        if (isInCheck){
+        if (isInCheck) {
             // Mate: returning MATE_VALUE + ply to consider fast mate first
             return -MATE_VALUE + ply;
-        }
-
-        else{
+        } else {
             // StalMate ->  return draw score
             return 0;
         }

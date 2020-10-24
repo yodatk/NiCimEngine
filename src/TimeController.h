@@ -39,7 +39,7 @@ extern int time;
 /**
  * Hold current increment for move
  */
-extern int inc;
+extern int increment;
 
 /**
  * Start time of making the move
