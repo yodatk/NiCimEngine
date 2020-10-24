@@ -5,6 +5,7 @@
 #define NISSIMENGINECPP_EVALUATION_H
 
 #include "Board.h"
+#include "NnueEval.h"
 
 /**
  * enum for game phases to flexible evaluation

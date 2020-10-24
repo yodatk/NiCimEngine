@@ -155,19 +155,7 @@ void readInput() {
 }
 
 
-/**
- * check with user \ GUI controller if there are command waiting
- */
-void communicate() {
-    // if time is up break here
-    if (isTimeSet == 1 && getTimeMs() > stopTime) {
-        // tell engine to stop calculating
-        isStopped = 1;
-    }
 
-    // read GUI input
-    readInput();
-}
 
 
 /**
