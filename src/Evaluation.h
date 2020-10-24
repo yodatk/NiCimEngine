@@ -7,7 +7,7 @@
 #include "Board.h"
 #include "NnueEval.h"
 
-#define NNUE_FILE "nn-04cf2b4ed1da.nnue"
+#define NNUE_FILE "nn-eba324f53044.nnue"
 
 /**
  * enum for game phases to flexible evaluation
@@ -208,8 +208,6 @@ static inline int evaluate() {
 
     int piece, square;
 
-    int doublePawns;
-
     // arrays and fields for stockfish nnue evaluation
     int pieces[33];
     int squares[33];
@@ -218,18 +216,10 @@ static inline int evaluate() {
     for (int pieceType = P; pieceType <= k; pieceType++) {
         // init piece bitboard copy
         bitboard = bitboards[pieceType];
-
-
         while (bitboard) {
             // getting piece and location
             piece = pieceType;
             square = getLSBIndex(bitboard);
-
-            // get opening/endgame material score
-            scoreOpening += materialScore[OPENING][piece];
-            scoreEndgame += materialScore[ENDGAME][piece];
-
-            // converting board and pieces state to nnue format
 
             if (piece == K) {
                 // handeling white king nnue
@@ -245,9 +235,77 @@ static inline int evaluate() {
                 squares[index] = nnueSquares[square];
                 index++;
             }
+            // removing piece
+            setBitOff(bitboard, square);
+        }
+    }
+
+    // set final zero on both nnue array
+    pieces[index] = 0;
+    squares[index] = 0;
+
+    // evaluating with NNUE
+    int nnueScore = evaluateNNUE(side, pieces, squares);
+
+
+
+    // interpolate score in the middle-game
+    if (gamePhase == MIDDLEGAME) {
+        score = (scoreOpening * gamePhaseScore +
+                 scoreEndgame * (openingPhaseScore - gamePhaseScore)) /
+                openingPhaseScore;
+    } else if (gamePhase == OPENING) {
+        score = scoreOpening;
+    } else if (gamePhase == ENDGAME) {
+        score = scoreEndgame;
+    }
+    if (gamePhase != ENDGAME) {
+        return nnueScore;
+    } else {
+        return (side == WHITE) ? score : -score;
+    }
+}
+
+static inline int evaluateOnLowTime() {
+    // get game phase score
+    int gamePhaseScore = getGamePhaseScore();
+
+    // determine game phase
+    int gamePhase = -1;
+
+    if (gamePhaseScore > openingPhaseScore) {
+        gamePhase = OPENING;
+    } else if (gamePhaseScore < endgamePhaseScore) {
+        gamePhase = ENDGAME;
+    } else {
+        gamePhase = MIDDLEGAME;
+    }
+
+
+    int score, scoreOpening = 0, scoreEndgame = 0;
+
+    U64 bitboard;
+
+    int piece, square;
+
+    int doublePawns;
+
+    for (int pieceType = P; pieceType <= k; pieceType++) {
+        // init piece bitboard copy
+        bitboard = bitboards[pieceType];
+
+
+        while (bitboard) {
+            // getting piece and location
+            piece = pieceType;
+            square = getLSBIndex(bitboard);
+
+            // get opening/endgame material score
+            scoreOpening += materialScore[OPENING][piece];
+            scoreEndgame += materialScore[ENDGAME][piece];
 
             // score positional piece scores, and special cases pieces
-            /* switch (piece) {
+            switch (piece) {
                 // evaluate WHITE pawns
                 case P:
                     // positional scoring
@@ -450,19 +508,12 @@ static inline int evaluate() {
                     scoreEndgame -= countBits(kingAttacks[square] & occupancies[BLACK]) * KING_SHIELD_BONUS;
 
                     break;
-            }*/
+            }
 
             // removing piece
             setBitOff(bitboard, square);
         }
     }
-
-    // set final zero on both nnue array
-    pieces[index] = 0;
-    squares[index] = 0;
-
-    int nnueScore = evaluateNNUE(side,pieces,squares) *5 /4;
-    (side == WHITE) ? (nnueScore) : (nnueScore=-nnueScore);
 
 
     // interpolate score in the middle-game
@@ -475,72 +526,10 @@ static inline int evaluate() {
     } else if (gamePhase == ENDGAME) {
         score = scoreEndgame;
     }
-    score += nnueScore;
+
 
     // return final evaluation based on side
     return (side == WHITE) ? score : -score;
-}
-
-//
-//// init NNUE input
-static inline void nnue_input(int *pieces, int *squares) {
-    U64 bitboard;
-    int piece, square;
-    int index = 2;
-
-    // loop over piece bitboards
-    for (int bb_piece = P; bb_piece <= k; bb_piece++) {
-        // init piece bitboard copy
-        bitboard = bitboards[bb_piece];
-
-        // loop over pieces within a bitboard
-        while (bitboard) {
-            // init piece
-            piece = bb_piece;
-
-            // init square
-            square = getLSBIndex(bitboard);
-
-            //printf("piece: %c  piece code: %d  square index: %d  square: %s\n", asciiPieces[piece], piece, square,
-            //       squareToCoordinates[square]);
-
-            if (piece == K) {
-                /* convert white king piece code to stockfish piece code and
-                   store it at the first index of pieces array
-                */
-                pieces[0] = nnuePieces[piece];
-
-                /* convert white king square index to stockfish square index and
-                   store it at the first index of pieces array
-                */
-                squares[0] = nnueSquares[square];
-            } else if (piece == k) {
-                /* convert black king piece code to stockfish piece code and
-                   store it at the second index of pieces array
-                */
-                pieces[1] = nnuePieces[piece];
-
-                /* convert black king square index to stockfish square index and
-                   store it at the second index of pieces array
-                */
-                squares[1] = nnueSquares[square];
-            } else {
-                /*  convert all the rest of piece code with corresponding square codes
-                    to stockfish piece codes and square indicies respectively
-                */
-                pieces[index] = nnuePieces[piece];
-                squares[index] = nnueSquares[square];
-                index++;
-            }
-
-            // pop LS1B
-            setBitOff(bitboard, square);
-        }
-    }
-
-    // end arrays with sero terminating character
-    pieces[index] = 0;
-    squares[index] = 0;
 }
 
 #endif //NISSIMENGINECPP_EVALUATION_H
