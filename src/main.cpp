@@ -38,22 +38,6 @@ void initAll() {
  */
 int mainDebug() {
     initAll();
-    parseFen(start_position);
-    printBoard();
-    // loaded file
-    initNNUE("nn-04cf2b4ed1da.nnue");
-
-
-    int pieces[33];
-    int squares[33];
-    nnue_input(pieces, squares);
-    int score = evaluateNNUE(side, pieces, squares);
-    printf("nnue eval: %d\n", evaluateFENNNUE(start_position));
-    printf("score: %d\n", score);
-
-    int eval_score = evaluate();
-    printf("eval_score::: %d\n", eval_score);
-
     return 0;
 }
 
