@@ -21,7 +21,6 @@ static inline int negamax(int alpha, int beta, int depth) {
     // initializing length of current variation
     pvLength[ply] = ply;
 
-
     int score;
 
     int bestMove = 0;
@@ -76,6 +75,20 @@ static inline int negamax(int alpha, int beta, int depth) {
 
 
     int legalMoves = 0;
+
+//    // evaluation pruning / static null move pruning
+//    if (depth < 3 && !pvNode && !isInCheck && abs(beta - 1) > -INFINITY + 100) {
+//        // get static evaluation score
+//        int static_eval = evaluate(alpha, beta, 1);
+//
+//        // define evaluation margin
+//        int eval_margin = 120 * depth;
+//
+//        // evaluation margin substracted from static evaluation score fails high
+//        if (static_eval - eval_margin >= beta)
+//            // evaluation margin substracted from static evaluation score
+//            return static_eval - eval_margin;
+//    }
 
     // null move pruning -> making another move from oppononet before continue evaluating to prune more moves
     if (depth >= 3 && isInCheck == 0 && ply) {
@@ -259,7 +272,7 @@ static inline int negamax(int alpha, int beta, int depth) {
 
             if (score >= beta) {
                 // storing move as beta
-                writeHashEntry(beta, depth, bestMove, BETA);
+                writeHashEntry(beta, bestMove, depth, BETA);
 
 
                 if (getMoveCapture(moveList->moves[count]) == 0) {
@@ -288,7 +301,7 @@ static inline int negamax(int alpha, int beta, int depth) {
     }
 
     // store hash entry with the score equal to alpha
-    writeHashEntry(alpha, depth, bestMove, hashFlag);
+    writeHashEntry(alpha, bestMove, depth, hashFlag);
 
     // return fail low score
     return alpha;
