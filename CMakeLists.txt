@@ -7,8 +7,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_COMPILER "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++")
-
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -static-libstdc++ -static-libgcc")
 set(CMAKE_CXX_FLAGS_DEBUG "-Ofast")
