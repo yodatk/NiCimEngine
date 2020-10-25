@@ -158,7 +158,7 @@ void parseGo(char *command) {
         movesToGo = atoi(argument + 10);
     }
 
-    if ((argument = strstr(command, "moveTime"))) {
+    if ((argument = strstr(command, "movetime"))) {
         // match UCI "moveTime" command parse amount of time allowed to spend to make a move
         moveTime = atoi(argument + 9);
     }
