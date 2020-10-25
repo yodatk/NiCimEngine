@@ -126,7 +126,7 @@ void parseGo(char *command) {
 
     // init parameters
     int depth = -1;
-    char *argument;
+    char *argument = nullptr;
 
 
     if ((argument = strstr(command, "infinite"))) {
@@ -158,7 +158,7 @@ void parseGo(char *command) {
         movesToGo = atoi(argument + 10);
     }
 
-    if ((argument = strstr(command, "moveTime"))) {
+    if ((argument = strstr(command, "movetime"))) {
         // match UCI "moveTime" command parse amount of time allowed to spend to make a move
         moveTime = atoi(argument + 9);
     }
@@ -208,7 +208,7 @@ void parseGo(char *command) {
 
 
     // print debug info
-    printf("time: %d inc:%d  start: %u  stop: %u  depth: %d  timeset:%d\n",
+    printf("time: %ld inc:%ld  start: %ld  stop: %ld  depth: %d  timeset:%d\n",
            time, increment, startTime, stopTime, depth, isTimeSet);
 
 

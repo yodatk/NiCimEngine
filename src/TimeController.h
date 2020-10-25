@@ -29,28 +29,28 @@ extern int movesToGo;
 /**
  * counter for the "movetime" command
  */
-extern int moveTime;
+extern long moveTime;
 
 /**
  * current time left to play related to UCI parameter "time" command
  */
-extern int time;
+extern long time;
 
 /**
  * Hold current increment for move
  */
-extern int increment;
+extern long increment;
 
 /**
  * Start time of making the move
  */
-extern int startTime;
+extern long startTime;
 
 
 /**
  * measure the time the calculation needs to stop "stoptime" according to UCI
  */
-extern int stopTime;
+extern long stopTime;
 
 /**
  * flag to check if there is time control for the current move
@@ -66,7 +66,7 @@ extern int isStopped;
  * get the current time in MS
  * @return long represents time in milliseconds
  */
-int getTimeMs();
+long getTimeMs();
 
 /**
  * checking if there is input wating from user or GUI controller

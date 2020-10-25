@@ -16,28 +16,28 @@ int movesToGo = 30;
 /**
  * counter for the "movetime" command
  */
-int moveTime = -1;
+long moveTime = -1;
 
 /**
  * current time left to play related to UCI parameter "time" command
  */
-int time = -1;
+long time = -1;
 
 
 /**
  * Hold current increment for move
  */
-int increment = 0;
+long increment = 0;
 
 /**
  * Start time of making the move
  */
-int startTime = 0;
+long startTime = 0;
 
 /**
  * measure the time the calculation needs to stop "stoptime" according to UCI
  */
-int stopTime = 0;
+long stopTime = 0;
 
 /**
  * flag to check if there is time control for the current move
@@ -56,7 +56,7 @@ int isStopped = 0;
  * get the current time in MS
  * @return long represents time in milliseconds
  */
-int getTimeMs() {
+long getTimeMs() {
 #ifdef WIN64
     return GetTickCount();
 #else
