@@ -228,7 +228,7 @@ static inline int evaluate() {
     squares[index] = 0;
 
     // evaluating with NNUE, with fifty move rule considiration
-    return evaluateNNUE(side, pieces, squares) * (100-fiftyRuleCounter)/100;
+    return (evaluateNNUE(side, pieces, squares) * (100-fiftyRuleCounter)/100);
 }
 
 static inline int evaluateOnLowTime() {
