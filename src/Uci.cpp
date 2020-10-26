@@ -185,11 +185,11 @@ void parseGo(char *command) {
 
         // set up timing
         time /= movesToGo;
-        time -= 50;
+        time -= 450;
 
         if(time < 0){
             time = 0;
-            increment -=50;
+            increment -=450;
             if(increment < 0){
                 increment = 1;
             }
