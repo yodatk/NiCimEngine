@@ -1,7 +1,8 @@
 # NiCim Engine
 
-IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol and Bitboards. Written in C++
-You can play against NiCim here: https://lichess.org/@/NissimEngine
+IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written in C++.
+
+**You can play against NiCim here:** https://lichess.org/@/NissimEngine
 
 ## Features:
  * Efficient Bitboards representation of Chess Board (https://www.chessprogramming.org/Bitboards)
