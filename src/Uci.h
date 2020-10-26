@@ -25,7 +25,7 @@
 #define DEFAULT_HASH_SIZE 64
 
 #define ENGINE_NAME "NiCim"
-#define VERSION "3.2.1"
+#define VERSION "3.3"
 
 
 /**
