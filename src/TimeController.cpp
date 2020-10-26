@@ -5,7 +5,7 @@
 /**
  * flag to see if the GUI \ User send a signal to quit
  */
-int isQuit = 0;
+int isQuit = false;
 
 /**
  * counter for the "movestogo" command
@@ -42,15 +42,18 @@ long stopTime = 0;
 /**
  * flag to check if there is time control for the current move
  */
-int isTimeSet = 0;
+int isTimeSet = false;
 
 
 /**
  * flag to see if the engine need to stop calculation
  */
-int isStopped = 0;
+int isStopped = false;
 
-// Miscellaneous functions forked from VICE by Richard Allbert
+/**
+ * Miscellaneous functions forked from VICE by Richard Allbert
+ */
+
 
 /**
  * get the current time in MS
@@ -142,14 +145,16 @@ void readInput() {
         // if input is available
         if (strlen(input) > 0) {
             // match UCI "quit" command
-            if (!strncmp(input, "quit", 4))
+            if (!strncmp(input, "quit", 4)){
                 // tell engine to terminate exacution
-                isQuit = 1;
-
+                isQuit = true;
+            }
                 // // match UCI "stop" command
-            else if (!strncmp(input, "stop", 4))
+            else if (!strncmp(input, "stop", 4)){
                 // tell engine to terminate exacution
-                isQuit = 1;
+                isQuit = true;
+            }
+
         }
     }
 }
@@ -163,13 +168,13 @@ void readInput() {
  */
 void resetTimeControl() {
     // reset timing
-    isQuit = 0;
+    isQuit = false;
     movesToGo = 30;
     moveTime = -1;
     time = -1;
     increment = 0;
     startTime = 0;
     stopTime = 0;
-    isTimeSet = 0;
-    isStopped = 0;
+    isTimeSet = false;
+    isStopped = false;
 }
