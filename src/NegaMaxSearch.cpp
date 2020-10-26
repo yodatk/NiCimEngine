@@ -8,7 +8,7 @@
 void searchPosition(int depth) {
 
     // reset time, score , Principal variation variables, and move table
-    int start = getTimeMs();
+    long start = getTimeMs();
     int score = 0;
     nodes = 0;
     isStopped = 0;
@@ -55,15 +55,15 @@ void searchPosition(int depth) {
         if (pvLength[0]) {
             // Printing Principal variation , if there is mate -> print it too
             if (score > -MATE_VALUE && score < -MATE_SCORE) {
-                printf("info score mate %d depth %d nodes %lld time %d pv ", -(score + MATE_VALUE) / 2 - 1,
+                printf("info score mate %d depth %d nodes %lld time %ld pv ", -(score + MATE_VALUE) / 2 - 1,
                        currentDepth, nodes,
                        (getTimeMs() - start));
             } else if (score > MATE_SCORE && score < MATE_VALUE) {
-                printf("info score mate %d depth %d nodes %lld time %d pv ", (MATE_VALUE - score) / 2 + 1,
+                printf("info score mate %d depth %d nodes %lld time %ld pv ", (MATE_VALUE - score) / 2 + 1,
                        currentDepth, nodes,
                        (getTimeMs() - start));
             } else {
-                printf("info score cp %d depth %d nodes %lld time %d pv ", score, currentDepth, nodes,
+                printf("info score cp %d depth %d nodes %lld time %ld pv ", score, currentDepth, nodes,
                        (getTimeMs() - start));
             }
 
@@ -79,6 +79,12 @@ void searchPosition(int depth) {
 
     // print best move
     printf("bestmove ");
-    printMove(pvTable[0][0]);
+    if(pvTable[0][0]){
+        printMove(pvTable[0][0]);
+    }
+    else{
+        printf("(none)");
+    }
+
     printf("\n");
 }

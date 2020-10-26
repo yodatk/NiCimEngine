@@ -30,12 +30,18 @@ void initAll() {
 
     // init Hash Table with default size value
     initHashTable(DEFAULT_HASH_SIZE);
+    initNNUE(NNUE_FILE);
 }
 
 /**
- * MAIN
+ * debug purpuses main
  */
-int main() {
+int mainDebug() {
+    initAll();
+    return 0;
+}
+
+int mainRelease() {
 
     initAll();
 
@@ -46,4 +52,14 @@ int main() {
     free(hashTable);
 
     return 0;
+}
+
+/**
+ * MAIN
+ */
+int main() {
+
+    // return mainDebug();
+
+    return mainRelease();
 }

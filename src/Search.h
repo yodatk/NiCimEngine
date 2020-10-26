@@ -134,12 +134,17 @@ static inline int scoreMove(int move) {
  * @param moveList list of all the possible moves from the current situation
  * @return flag '1' represent the sort is finished
  */
-static inline int sortMoves(moves *moveList) {
-    int move_scores[moveList->count];
-
-    for (int count = 0; count < moveList->count; count++) {
-        // for each move, calculate score
-        move_scores[count] = scoreMove(moveList->moves[count]);
+static inline int sortMoves(moves *moveList,int bestMove) {
+    int moveScores[moveList->count];
+    for (int i = 0; i < moveList->count; i++) {
+        // if best move -> give A LOT of score
+        if(bestMove == moveList->moves[i]){
+            moveScores[i] = 30000;
+        }
+        else{
+            // for each move, calculate score
+            moveScores[i] = scoreMove(moveList->moves[i]);
+        }
     }
 
 
@@ -147,11 +152,11 @@ static inline int sortMoves(moves *moveList) {
     for (int current_move = 0; current_move < moveList->count; current_move++) {
         for (int next_move = current_move + 1; next_move < moveList->count; next_move++) {
 
-            if (move_scores[current_move] < move_scores[next_move]) {
+            if (moveScores[current_move] < moveScores[next_move]) {
                 // swap scores
-                int tempScore = move_scores[current_move];
-                move_scores[current_move] = move_scores[next_move];
-                move_scores[next_move] = tempScore;
+                int tempScore = moveScores[current_move];
+                moveScores[current_move] = moveScores[next_move];
+                moveScores[next_move] = tempScore;
 
                 // swap moves
                 int tempMove = moveList->moves[current_move];
@@ -199,7 +204,7 @@ static inline int quietSearch(int alpha, int beta) {
     // generate and sort next move possible
     moves moveList[1];
     generateMoves(moveList);
-    sortMoves(moveList);
+    sortMoves(moveList,0);
 
 
     for (int count = 0; count < moveList->count; count++) {

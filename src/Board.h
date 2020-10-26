@@ -20,19 +20,22 @@
  */
 #define copyBoard()                                                    \
     U64 bitboardsCopy[12], occupanciesCopy[3];                        \
-    int sideCopy, enpassantCopy, castleCopy;                         \
+    int sideCopy, enpassantCopy, castleCopy,fiftyRuleCounterCopy;     \
     memcpy(bitboardsCopy, bitboards, 96);                              \
     memcpy(occupanciesCopy, occupancies, 24);                          \
-    sideCopy = side, enpassantCopy = enpassant, castleCopy = castle; \
+    sideCopy = side, enpassantCopy = enpassant, castleCopy = castle;   \
+    fiftyRuleCounterCopy = fiftyRuleCounter;                            \
     U64 hashKeyCopy = hashKey;
+
 
 /**
  * macro to restore board state from copy
  */
 #define restoreBoard()                                                     \
     memcpy(bitboards, bitboardsCopy, 96);                              \
-    memcpy(occupancies, occupanciesCopy, 24);                          \
-    side = sideCopy, enpassant = enpassantCopy, castle = castleCopy; \
+    memcpy(occupancies, occupanciesCopy, 24);                              \
+    side = sideCopy, enpassant = enpassantCopy, castle = castleCopy;       \
+    fiftyRuleCounter= fiftyRuleCounterCopy;                               \
     hashKey = hashKeyCopy;
 
 
@@ -161,6 +164,11 @@ extern const int castlingRights[64];
  * var to store the current ply of the search
  */
 extern int ply;
+
+/**
+ * counter to avoid drawing \ achiving a draw because of the fifty move rule
+ */
+extern int fiftyRuleCounter;
 
 /**
  * print the current situation on the board

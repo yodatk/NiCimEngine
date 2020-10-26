@@ -126,7 +126,7 @@ void parseGo(char *command) {
 
     // init parameters
     int depth = -1;
-    char *argument;
+    char *argument = nullptr;
 
 
     if ((argument = strstr(command, "infinite"))) {
@@ -135,11 +135,11 @@ void parseGo(char *command) {
 
     if ((argument = strstr(command, "binc")) && side == BLACK) {
         //  match UCI "binc" command parse BLACK time increment
-        inc = atoi(argument + 5);
+        increment = atoi(argument + 5);
     }
     if ((argument = strstr(command, "winc")) && side == WHITE) {
         // match UCI "winc" command parse WHITE time increment
-        inc = atoi(argument + 5);
+        increment = atoi(argument + 5);
     }
 
     if ((argument = strstr(command, "wtime")) && side == WHITE) {
@@ -185,17 +185,19 @@ void parseGo(char *command) {
 
         // set up timing
         time /= movesToGo;
+        time -= 450;
 
-        // disable time buffer when time is almost up
-        if (time > 1500)
-            time -= 50;
+        if(time < 0){
+            time = 0;
+            increment -=450;
+            if(increment < 0){
+                increment = 1;
+            }
+        }
+
 
         // init stoptime
-        stopTime = startTime + time + inc;
-
-        // treat increment as seconds per move when time is almost up
-        if (time < 1500 && inc && depth == 64)
-            stopTime = startTime + inc - 50;
+        stopTime = startTime + time + increment;
     }
 
 
@@ -206,8 +208,8 @@ void parseGo(char *command) {
 
 
     // print debug info
-    printf("time: %d  start: %u  stop: %u  depth: %d  timeset:%d\n",
-           time, startTime, stopTime, depth, isTimeSet);
+    printf("time: %ld inc:%ld  start: %ld  stop: %ld  depth: %d  timeset:%d\n",
+           time, increment, startTime, stopTime, depth, isTimeSet);
 
 
     searchPosition(depth);

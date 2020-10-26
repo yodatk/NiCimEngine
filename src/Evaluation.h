@@ -5,6 +5,9 @@
 #define NISSIMENGINECPP_EVALUATION_H
 
 #include "Board.h"
+#include "NnueEval.h"
+
+#define NNUE_FILE "nn-eba324f53044.nnue"
 
 /**
  * enum for game phases to flexible evaluation
@@ -13,6 +16,14 @@ enum {
     OPENING,
     ENDGAME,
     MIDDLEGAME
+};
+
+/**
+ * enum to symbolize white and black kings indexes in the nnue pieces array
+ */
+enum {
+    WHITE_KING,
+    BLACK_KING,
 };
 
 /**
@@ -27,6 +38,15 @@ enum {
     KING
 };
 
+/**
+ * array to convert pieces value to NNUE evaluation of stockfish
+ */
+extern int nnuePieces[12];
+
+/**
+ * array to convert squares value to NNUE evaluation of stockfish
+ */
+extern int nnueSquares[64];
 
 /**
  * 2D array to get piece value [game phase][piece]
@@ -167,6 +187,51 @@ static inline int getGamePhaseScore() {
  * @return score of the current board
  */
 static inline int evaluate() {
+    U64 bitboard;
+
+    int piece, square;
+
+    // arrays and fields for stockfish nnue evaluation
+    int pieces[33];
+    int squares[33];
+    int index = 2;
+
+    for (int pieceType = P; pieceType <= k; pieceType++) {
+        // init piece bitboard copy
+        bitboard = bitboards[pieceType];
+        while (bitboard) {
+            // getting piece and location
+            piece = pieceType;
+            square = getLSBIndex(bitboard);
+
+            if (piece == K) {
+                // handeling white king nnue
+                pieces[WHITE_KING] = nnuePieces[piece];
+                squares[WHITE_KING] = nnueSquares[square];
+            } else if (piece == k) {
+                // handeling black king nnue
+                pieces[BLACK_KING] = nnuePieces[piece];
+                squares[BLACK_KING] = nnueSquares[square];
+            } else {
+                // converting rest of the pieces to converted squares for nnue evaluation
+                pieces[index] = nnuePieces[piece];
+                squares[index] = nnueSquares[square];
+                index++;
+            }
+            // removing piece
+            setBitOff(bitboard, square);
+        }
+    }
+
+    // set final zero on both nnue array
+    pieces[index] = 0;
+    squares[index] = 0;
+
+    // evaluating with NNUE, with fifty move rule considiration
+    return (evaluateNNUE(side, pieces, squares) * (100-fiftyRuleCounter)/100);
+}
+
+static inline int evaluateOnLowTime() {
     // get game phase score
     int gamePhaseScore = getGamePhaseScore();
 

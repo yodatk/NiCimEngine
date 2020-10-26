@@ -47,6 +47,10 @@ int repetitionIndex;
  */
 int ply;
 
+/**
+ * counter to avoid drawing \ achiving a draw because of the fifty move rule
+ */
+int fiftyRuleCounter;
 
 /**
  * Array for fast update of the castling rights after a move
@@ -98,6 +102,7 @@ void printBoard() {
            (castle & BK) ? 'k' : '-',
            (castle & BQ) ? 'q' : '-');
     printf("     Hash key:  %llx\n\n", hashKey);
+    // printf("     fifty move counter: %d\n",fiftyRuleCounter);
 }
 
 /**
@@ -107,6 +112,7 @@ void resetBoard() {
     memset(bitboards, 0ULL, sizeof(bitboards));
     memset(occupancies, 0ULL, sizeof(occupancies));
     side = 0;
+    fiftyRuleCounter = 0;
     enpassant = NO_SQUARE;
     castle = 0;
     repetitionIndex = 0;
@@ -209,7 +215,6 @@ void parseFen(char *fen) {
 }
 
 
-
 /**
  * debug function to check all the attacked square by a given side
  * @param side attacking side
@@ -228,8 +233,6 @@ void printAttackedSquares(int side) {
     }
     printf("\n     A B C D E F G H\n\n");
 }
-
-
 
 
 /**
@@ -302,8 +305,16 @@ int makeMove(int move, int moveFlag) {
         hashKey ^= pieceKeys[piece][sourceSquare];
         hashKey ^= pieceKeys[piece][targetSquare];
 
+        fiftyRuleCounter++;
+        if (piece == P || piece == p) {
+            // resetting counter because of pawn move
+            fiftyRuleCounter = 0;
+        }
+
 
         if (capture) {
+            // resetting counter because of capture move
+            fiftyRuleCounter = 0;
             // if handling capture moves -> pick up bitboard piece index ranges depending on side
             int startPiece, endPiece;
             if (side == WHITE) {

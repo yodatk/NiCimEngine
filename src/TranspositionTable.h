@@ -47,6 +47,10 @@ typedef struct {
      * Score of current board situation
      */
     int score;
+    /**
+     * storing best move if necessary
+     */
+    int bestMove;
 } TTEntry;
 
 /**
@@ -70,10 +74,11 @@ void initHashTable(int mb);
  * Read Hash Entry with given parameters if possible
  * @param alpha Integer represent the alpha score of current situation
  * @param beta  Integer represent the beta score of the current situation
+ * @param bestMove address of the integer to put the value of the entry best move into
  * @param depth depth of current board
  * @return  Score of the current board according to the Hash table. if not found, return NO_HASH_FOUND value
  */
-static inline int readHashEntry(int alpha, int beta, int depth) {
+static inline int readHashEntry(int alpha, int beta,int* bestMove, int depth) {
     // retrieving entry that matches the current hash
     TTEntry *hashEntry = &hashTable[hashKey % hashEntries];
 
@@ -109,6 +114,7 @@ static inline int readHashEntry(int alpha, int beta, int depth) {
             }
 
         }
+        *bestMove = hashEntry->bestMove;
     }
 
     // if hash entry doesn't exist
@@ -118,10 +124,11 @@ static inline int readHashEntry(int alpha, int beta, int depth) {
 /**
  * Write Hash Entry of current board state
  * @param score Integer represent the score of the current board
+ * @param bestMove Integer represents the best move found so far
  * @param depth  depth of current board
  * @param hashFlag Integer represent the beta score of the current situation
  */
-static inline void writeHashEntry(int score, int depth, int hashFlag) {
+static inline void writeHashEntry(int score, int bestMove ,int depth, int hashFlag) {
     // getting current
     TTEntry *hashEntry = &hashTable[hashKey % hashEntries];
 
@@ -139,6 +146,7 @@ static inline void writeHashEntry(int score, int depth, int hashFlag) {
     hashEntry->score = score;
     hashEntry->flag = hashFlag;
     hashEntry->depth = depth;
+    hashEntry->bestMove = bestMove;
 }
 
 

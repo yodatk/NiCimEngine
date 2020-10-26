@@ -21,14 +21,14 @@ static inline int negamax(int alpha, int beta, int depth) {
     // initializing length of current variation
     pvLength[ply] = ply;
 
-
     int score;
 
+    int bestMove = 0;
 
     int hashFlag = ALPHA;
 
-    if (ply && isRepetition()) {
-        // if repetition is found -> return draw value
+    if ((ply && isRepetition()) || fiftyRuleCounter >= 100) {
+        // if repetition is found \ 50 move rule found -> return draw value
         return 0;
     }
 
@@ -37,7 +37,7 @@ static inline int negamax(int alpha, int beta, int depth) {
     int pvNode = beta - alpha > 1;
 
 
-    if (ply && (score = readHashEntry(alpha, beta, depth)) != NO_HASH_FOUND && pvNode == 0) {
+    if (ply && (score = readHashEntry(alpha, beta, &bestMove, depth)) != NO_HASH_FOUND && pvNode == 0) {
         // if search deep is bigger than 0 AND hash entry was found, AND current node is not a PV node -> return score found in entry
         return score;
     }
@@ -75,6 +75,18 @@ static inline int negamax(int alpha, int beta, int depth) {
 
 
     int legalMoves = 0;
+
+
+
+    // evaluation pruning / static null move pruning
+    int staticEval = evaluate();
+    if (depth < 3 && !pvNode && !isInCheck && abs(beta - 1) > -INFINITY + 100) {
+        int evalMargin = 120 * depth;
+        if (staticEval - evalMargin >= beta) {
+            return staticEval - evalMargin;
+        }
+
+    }
 
     // null move pruning -> making another move from oppononet before continue evaluating to prune more moves
     if (depth >= 3 && isInCheck == 0 && ply) {
@@ -115,6 +127,42 @@ static inline int negamax(int alpha, int beta, int depth) {
 
     }
 
+    // razoring
+    if (!pvNode && !isInCheck && depth <= 3) {
+        // get static eval and add first bonus
+        score = evaluate() + 125;
+
+        // define new score
+        int newScore;
+
+        // static evaluation indicates a fail-low node
+        if (score < beta) {
+            // on depth 1
+            if (depth == 1) {
+                // get quiscence score
+                newScore = quietSearch(alpha, beta);
+
+                // return quiescence score if it's greater then static evaluation score
+                return (newScore > score) ? newScore : score;
+            }
+
+            // add second bonus to static evaluation
+            score += 175;
+
+            // static evaluation indicates a fail-low node
+            if (score < beta && depth <= 2) {
+                // get quiscence score
+                newScore = quietSearch(alpha, beta);
+
+                // quiescence score indicates fail-low node
+                if (newScore < beta)
+                    // return quiescence score if it's greater then static evaluation score
+                    return (newScore > score) ? newScore : score;
+            }
+        }
+    }
+
+
     moves moveList[1];
     generateMoves(moveList);
 
@@ -124,7 +172,7 @@ static inline int negamax(int alpha, int beta, int depth) {
         enablePvScoring(moveList);
     }
 
-    sortMoves(moveList);
+    sortMoves(moveList, bestMove);
 
     // number of moves searched in a move list
     int movesSearched = 0;
@@ -201,6 +249,7 @@ static inline int negamax(int alpha, int beta, int depth) {
             // found a better move -> mark this move as Principal variation Node
             hashFlag = PV;
 
+            bestMove = moveList->moves[count];
 
             if (getMoveCapture(moveList->moves[count]) == 0) {
                 // if not a capture -> store as history move
@@ -212,7 +261,7 @@ static inline int negamax(int alpha, int beta, int depth) {
             // PV node (position), writing it to PV table
             alpha = score;
             pvTable[ply][ply] = moveList->moves[count];
-            for (int nextPly = ply + 1; nextPly < pvLength[ply + 1]; nextPly++){
+            for (int nextPly = ply + 1; nextPly < pvLength[ply + 1]; nextPly++) {
                 // copy move from deeper ply into a current ply's line
                 pvTable[ply][nextPly] = pvTable[ply + 1][nextPly];
             }
@@ -221,7 +270,7 @@ static inline int negamax(int alpha, int beta, int depth) {
 
             if (score >= beta) {
                 // storing move as beta
-                writeHashEntry(beta, depth, BETA);
+                writeHashEntry(beta, bestMove, depth, BETA);
 
 
                 if (getMoveCapture(moveList->moves[count]) == 0) {
@@ -239,12 +288,10 @@ static inline int negamax(int alpha, int beta, int depth) {
 
     if (legalMoves == 0) {
         // we don't have any legal moves to make in the current postion -> check for mate or stalmate
-        if (isInCheck){
+        if (isInCheck) {
             // Mate: returning MATE_VALUE + ply to consider fast mate first
             return -MATE_VALUE + ply;
-        }
-
-        else{
+        } else {
             // StalMate ->  return draw score
             return 0;
         }
@@ -252,7 +299,7 @@ static inline int negamax(int alpha, int beta, int depth) {
     }
 
     // store hash entry with the score equal to alpha
-    writeHashEntry(alpha, depth, hashFlag);
+    writeHashEntry(alpha, bestMove, depth, hashFlag);
 
     // return fail low score
     return alpha;
