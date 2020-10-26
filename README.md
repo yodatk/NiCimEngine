@@ -1,21 +1,23 @@
 # NiCim Engine
 
-IMPROVED 3rd version of Nissim engine: NiCim. working with UCI protocol and Bitboards. written in C++
+IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol and Bitboards. Written in C++
+You can play against NiCim here: https://lichess.org/@/NissimEngine
 
 ## Features:
- * Pre-Calculated Moves and Attacks, using MagicBitboards
+ * Efficient Bitboards representation of Chess Board (https://www.chessprogramming.org/Bitboards)
+ * Pre-Calculated Moves and Attacks, using MagicBitboards (https://www.chessprogramming.org/Magic_Bitboards)
  * Alpha Beta pruning based search, with:
-    - Principal Variation Search 
-    - Move ordering by Princiopal variation Nodem, killer moves, and history moves
-    - Late Move Reduction
-    - Null Move Pruning
- * Smart evaluation Including :
-    - Material Evaluation
-    - Positional Evaluation
-    - Pawn structre and King Saftey
-    - Open and semi files considiration
-    - Opening \ Middle Game \ End Game Evaluation
- * Transposition Table
+    - Quiescence Search (https://www.chessprogramming.org/Quiescence_Search)
+    - Principal Variation Search (https://www.chessprogramming.org/Principal_Variation_Search)
+    - Move ordering by  (https://www.chessprogramming.org/Move_Ordering):
+        - Principal variation Node (https://www.chessprogramming.org/PV-Move)
+        - Killer moves (https://www.chessprogramming.org/Killer_Heuristic)
+        - History moves (https://www.chessprogramming.org/History_Heuristic)
+    - Late Move Reduction (https://www.chessprogramming.org/Late_Move_Reductions)
+    - Null Move Pruning (https://www.chessprogramming.org/Null_Move_Pruning)
+    - Razoring (https://www.chessprogramming.org/Razoring)
+ * NNUE Evaluation! (by https://github.com/dshawul/nnue-probe)
+ * Transposition Table (https://www.chessprogramming.org/Transposition_Table)
 
 
 ## Thanks A Lot to these Wonderful guides: 
