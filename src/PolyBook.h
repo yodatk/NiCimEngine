@@ -15,6 +15,11 @@ typedef struct {
 } BookEntry;
 
 /**
+ * boolean flag to determine if to use book or not
+ */
+extern int IS_USING_BOOK;
+
+/**
  * number of entries in the book
  */
 extern long NUM_OF_ENTRIES;
@@ -42,7 +47,7 @@ U64 polyKeyFromBoard();
 
 int getBookMove();
 
-void listBookMoves(U64 move);
+//void listBookMoves(U64 move);
 
 
 #endif //NICIMENGINE_POLYBOOK_H

@@ -4,6 +4,7 @@
 
 #include "Search.h"
 #include "TranspositionTable.h"
+#include "PolyBook.h"
 
 
 /**

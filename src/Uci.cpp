@@ -2,10 +2,7 @@
 #include "Uci.h"
 
 
-/**
- * boolean flag to determine if to use book or not
- */
-int IS_USING_BOOK = true;
+
 
 /**
  * Time in milliseconds to reduce from total to make a move to ensure the engine does not lose on time

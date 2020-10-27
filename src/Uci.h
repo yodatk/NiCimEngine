@@ -25,14 +25,11 @@
 #define DEFAULT_HASH_SIZE 64
 #define DELAY_CONFIG_FILE_NAME "ONLINE_TIME_CONFIG.txt"
 #define ENGINE_NAME "NiCim"
-#define VERSION "3.3"
+#define VERSION "3.4"
 #define ONLINE_DELAY_TIME 450
 #define LOCAL_DELAY_TIME  50
 
-/**
- * boolean flag to determine if to use book or not
- */
-extern int IS_USING_BOOK;
+
 
 /**
  * set delay time when calculating "time to move" according to play in local machine (in arena) or in online(lichess):

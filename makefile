@@ -1,9 +1,9 @@
 CXX = x86_64-w64-mingw32-g++
 CXXFLAGS = -Ofast -fomit-frame-pointer -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DUSE_SSE -msse -g -Wall  -static-libstdc++ -static-libgcc -c
 
-OBJECTS = bin\main.o bin\Uci.o bin\NegaMaxSearch.o bin\Attacks.o bin\Squares.o bin\Board.o bin\Evaluation.o bin\TimeController.o bin\RandomNumbers.o bin\Bitboard.o bin\ZorbiestKeys.o bin\MagicNumbers.o bin\PerftTest.o bin\Search.o bin\TranspositionTable.o bin\Pieces.o bin\nnue\misc.o bin\nnue\nnue.o bin\NnueEval.o
+OBJECTS = bin\main.o bin\Uci.o bin\NegaMaxSearch.o bin\Attacks.o bin\Squares.o bin\Board.o bin\Evaluation.o bin\TimeController.o bin\RandomNumbers.o bin\Bitboard.o bin\ZorbiestKeys.o bin\MagicNumbers.o bin\PerftTest.o bin\Search.o bin\TranspositionTable.o bin\Pieces.o bin\nnue\misc.o bin\nnue\nnue.o bin\NnueEval.o bin\PolyKeys.o bin\PolyBook.o
 
-all: bin\NiCim.exe bin\NiCim
+all: bin\NiCim.exe
 
 bin\NiCim.exe : $(OBJECTS)
 	$(CXX) -Ofast -fomit-frame-pointer -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DUSE_SSE -msse -g -Wall  -static-libstdc++ -static-libgcc -o $@ $^
@@ -64,3 +64,9 @@ bin\nnue\nnue.o: src\nnue\nnue.cpp
 
 bin\NnueEval.o: src\NnueEval.cpp
 	$(CXX) $(CXXFLAGS) -o bin\NnueEval.o src\NnueEval.cpp
+
+bin\PolyKeys.o: src\PolyKeys.cpp
+	$(CXX) $(CXXFLAGS) -o bin\PolyKeys.o src\PolyKeys.cpp
+
+bin\PolyBook.o: src\PolyKeys.cpp
+	$(CXX) $(CXXFLAGS) -o bin\PolyBook.o src\PolyBook.cpp

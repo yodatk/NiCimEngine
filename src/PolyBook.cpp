@@ -4,6 +4,11 @@
 #include "Uci.h"
 
 /**
+ * boolean flag to determine if to use book or not
+ */
+int IS_USING_BOOK = true;
+
+/**
  * converting pieces to poly pieces for opening book
  */
 const int PolyTypeOfPiece[12] = {
@@ -118,7 +123,7 @@ int initPolyBook() {
         }
         // reading book entries into allocated memory
         NUM_OF_ENTRIES = position / sizeof(BookEntry);
-        if(NUM_OF_ENTRIES <= 0){
+        if (NUM_OF_ENTRIES <= 0) {
             // no entries
             return false;
         }
@@ -126,7 +131,7 @@ int initPolyBook() {
         entries = (BookEntry *) malloc(NUM_OF_ENTRIES * sizeof(BookEntry));
         rewind(bookFile);
         size_t returnValue = fread(entries, sizeof(BookEntry), NUM_OF_ENTRIES, bookFile);
-        printf("book: fread() %ld entries read in from file", returnValue);
+        printf("book: read %llu entries read in from file", returnValue);
 
         return true;
     }
@@ -200,18 +205,17 @@ int convertPolyMoveToNiCimMove(unsigned short move) {
  * listing all the moves option from the given polykey
  * @param polkey U64 number which is a hashed move key
  */
-void listBookMoves(U64 polkey) {
-    int index;
+int getBookMove() {
     BookEntry *entry;
     unsigned short move;
     const int MAX_BOOKS_MOVES = 32;
     int bookMoves[MAX_BOOKS_MOVES];
-    int tempMove;
+    int tempMove = 0;
     int count = 0;
-
+    U64 polykey = polyKeyFromBoard();
 
     for (entry = entries; entry < entries + NUM_OF_ENTRIES; entry++) {
-        if (polkey == endianSwapU64(entry->key)) {
+        if (polykey == endianSwapU64(entry->key)) {
             move = endianSwapU16(entry->move);
             tempMove = convertPolyMoveToNiCimMove(move);
             if (tempMove != 0) {
@@ -222,19 +226,12 @@ void listBookMoves(U64 polkey) {
             }
         }
     }
-    printf("listing books moves\n");
-    for (index = 0; index < count; ++index) {
-        printf("book move #%d ", index + 1);
-        printMove(bookMoves[index]);
-        printf("\n");
+    // randomly selecting a move
+    if (count > 0) {
+        int randMove = rand() % count;
+        return bookMoves[randMove];
+    } else {
+        return 0;
     }
-
-}
-
-int getBookMove() {
-    U64 polyKey = polyKeyFromBoard();
-    printf("polyKey: %llx\n", polyKey);
-    listBookMoves(polyKey);
-    return 0;
 
 }
