@@ -11,7 +11,7 @@
 #include <cstring>
 #include <unistd.h>
 #include "NegaMaxSearch.h"
-
+#include "PolyBook.h"
 // FEN dedug positions
 #define empty_board "8/8/8/8/8/8/8/8 b - - "
 #define start_position "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 "

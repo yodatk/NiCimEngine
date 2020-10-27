@@ -32,11 +32,14 @@ void initAll() {
 
     // init Hash Table with default size value
     initHashTable(DEFAULT_HASH_SIZE);
+
+    // init delay time - for online matches or local matches
     initDelayTime();
-    /////
     printf("DELAY_TIME: %d\n",DELAY_TIME);
-    //////
+
     initNNUE(NNUE_FILE);
+
+    initPolyBook();
 }
 
 /**
@@ -56,6 +59,7 @@ int mainRelease() {
 
     // free allocated hash
     free(hashTable);
+    cleanPolyBook();
 
     return 0;
 }

@@ -319,5 +319,9 @@ void UCILoop() {
             printf("    Set hash table size to %dMB\n", mb);
             initHashTable(mb);
         }
+        else if(!strncmp(input,"polykey",7)){
+            printBoard();
+            printf("PolyKey = %llX\n",polyKeyFromBoard());
+        }
     }
 }
