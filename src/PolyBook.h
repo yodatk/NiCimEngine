@@ -22,7 +22,7 @@ extern long NUM_OF_ENTRIES;
 /**
  * pointer to the current entry
  */
-extern BookEntry* entries;
+extern BookEntry *entries;
 
 /**
  * init Entries in book
@@ -39,6 +39,10 @@ extern const int PolyTypeOfPiece[12];
 extern int reversedSquares[64];
 
 U64 polyKeyFromBoard();
+
+int getBookMove();
+
+void listBookMoves(U64 move);
 
 
 #endif //NICIMENGINE_POLYBOOK_H

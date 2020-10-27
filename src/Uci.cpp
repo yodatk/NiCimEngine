@@ -3,6 +3,11 @@
 
 
 /**
+ * boolean flag to determine if to use book or not
+ */
+int IS_USING_BOOK = true;
+
+/**
  * Time in milliseconds to reduce from total to make a move to ensure the engine does not lose on time
  */
 int DELAY_TIME;
@@ -243,15 +248,16 @@ void parseGo(char *command) {
 
 /**
  * Print info about the engine, and declares it is working with UCI protocol
- * @param withHash Integer flag to point if to print Hash data, or not.( withHash=0 ->not printing, withHash!=0 -> printing)
+ * @param withOptions Integer flag to point if to print options data, or not.( withOptions=0 ->not printing, withOptions!=0 -> printing)
  */
-void printInfo(int withHash) {
+void printInfo(int withOptions) {
     // print engine info
     printf("id name %s %s\n", ENGINE_NAME, VERSION);
     printf("id author yodatk\n");
-    if (withHash) {
+    if (withOptions) {
         printf("option name Hash type spin default %d min %d max %d\n", DEFAULT_HASH_SIZE, MIN_HASH_SIZE,
                MAX_HASH_SIZE);
+        printf("option name Book type check default true\n");
     }
     printf("uciok\n");
 }
@@ -321,7 +327,18 @@ void UCILoop() {
         }
         else if(!strncmp(input,"polykey",7)){
             printBoard();
-            printf("PolyKey = %llX\n",polyKeyFromBoard());
+            getBookMove();
+        }else if (!strncmp(input, "setoption name Book value ", 26)) {
+            char *ptr = nullptr;
+            ptr = strstr(input,"true");
+            if(ptr != nullptr){
+                // book on
+                IS_USING_BOOK = true;
+            }
+            else{
+                // book off
+                IS_USING_BOOK = false;
+            }
         }
     }
 }

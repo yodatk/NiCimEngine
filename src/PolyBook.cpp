@@ -1,6 +1,7 @@
 
 
 #include "PolyBook.h"
+#include "Uci.h"
 
 /**
  * converting pieces to poly pieces for opening book
@@ -17,7 +18,7 @@ long NUM_OF_ENTRIES;
 /**
  * pointer to the current entry
  */
-BookEntry* entries;
+BookEntry *entries;
 
 /**
  * array to convert squares value to NNUE evaluation of stockfish
@@ -89,7 +90,7 @@ U64 polyKeyFromBoard() {
         finalKey ^= Random64Poly[offset + file];
     }
 
-    if (side == WHITE){
+    if (side == WHITE) {
         finalKey ^= Random64Poly[780];
     }
 
@@ -100,35 +101,140 @@ U64 polyKeyFromBoard() {
 /**
  * init Entries in book
  */
-int initPolyBook(){
-    FILE* bookFile = fopen(NAME_OF_BOOK, "rb");
-    if(bookFile == nullptr){
+int initPolyBook() {
+    FILE *bookFile = fopen(NAME_OF_BOOK, "rb");
+    if (bookFile == nullptr) {
         // didn't found book file
         printf("BOOK: BOOK FILE NOT FOUND\n");
         return false;
-    }else{
+    } else {
         // measure the size of the book file
-        fseek(bookFile,0,SEEK_END);
+        fseek(bookFile, 0, SEEK_END);
         long position = ftell(bookFile);
-        if(position < sizeof(BookEntry)){
+        if (position < sizeof(BookEntry)) {
             // no entries found \ file too small
             printf("BOOK: NO ENTRIES FOUND\n");
             return false;
         }
         // reading book entries into allocated memory
         NUM_OF_ENTRIES = position / sizeof(BookEntry);
-        printf("book: %ld entries found\n",NUM_OF_ENTRIES);
-        entries = (BookEntry*)malloc(NUM_OF_ENTRIES * sizeof(BookEntry));
+        if(NUM_OF_ENTRIES <= 0){
+            // no entries
+            return false;
+        }
+        printf("book: %ld entries found\n", NUM_OF_ENTRIES);
+        entries = (BookEntry *) malloc(NUM_OF_ENTRIES * sizeof(BookEntry));
         rewind(bookFile);
-        size_t returnValue = fread(entries, sizeof(BookEntry),NUM_OF_ENTRIES,bookFile);
+        size_t returnValue = fread(entries, sizeof(BookEntry), NUM_OF_ENTRIES, bookFile);
         printf("book: fread() %ld entries read in from file", returnValue);
+
         return true;
     }
+}
+
+unsigned short endianSwapU16(unsigned short x) {
+    x = (x >> 8) | (x << 8);
+    return x;
+}
+
+unsigned int endianSwapU32(unsigned int x) {
+    x = (x >> 24) |
+        ((x << 8) & 0x00FF0000) |
+        ((x >> 8) & 0x0000FF00) |
+        (x << 24);
+    return x;
+}
+
+U64 endianSwapU64(U64 x) {
+    x =
+            (x >> 56) |
+            ((x << 40) & 0x00FF000000000000) |
+            ((x << 24) & 0x0000FF0000000000) |
+            ((x << 8) & 0x000000FF00000000) |
+            ((x >> 8) & 0x00000000FF000000) |
+            ((x >> 24) & 0x0000000000FF0000) |
+            ((x >> 40) & 0x000000000000FF00) |
+            (x << 56);
+    return x;
 }
 
 /**
  * free memory of book
  */
-void cleanPolyBook(){
+void cleanPolyBook() {
     free(entries);
+}
+
+
+int convertPolyMoveToNiCimMove(unsigned short move) {
+    short sourceFile = (move >> 6) & 7;
+    short sourceRank = (move >> 9) & 7;
+    short sourceSquare = reversedSquares[8 * sourceRank + sourceFile];
+    short targetFile = (move >> 0) & 7;
+    short targetRank = (move >> 3) & 7;
+    short targetSquare = reversedSquares[8 * targetRank + targetFile];
+    short promotedPiece = (move >> 12) & 7;
+    char moveString[6];
+    if (promotedPiece == 0) {
+        sprintf(moveString, "%s%s", squareToCoordinates[sourceSquare], squareToCoordinates[targetSquare]);
+    } else {
+        char promotionChar = 'q';
+        switch (promotedPiece) {
+            case 1 :
+                promotionChar = 'n';
+                break;
+            case 2 :
+                promotionChar = 'b';
+                break;
+            case 3 :
+                promotionChar = 'r';
+                break;
+        }
+        sprintf(moveString, "%s%s%c", squareToCoordinates[sourceSquare], squareToCoordinates[targetSquare],
+                promotionChar);
+    }
+    return parseMove(moveString);
+}
+
+/**
+ * listing all the moves option from the given polykey
+ * @param polkey U64 number which is a hashed move key
+ */
+void listBookMoves(U64 polkey) {
+    int index;
+    BookEntry *entry;
+    unsigned short move;
+    const int MAX_BOOKS_MOVES = 32;
+    int bookMoves[MAX_BOOKS_MOVES];
+    int tempMove;
+    int count = 0;
+
+
+    for (entry = entries; entry < entries + NUM_OF_ENTRIES; entry++) {
+        if (polkey == endianSwapU64(entry->key)) {
+            move = endianSwapU16(entry->move);
+            tempMove = convertPolyMoveToNiCimMove(move);
+            if (tempMove != 0) {
+                bookMoves[count++] = tempMove;
+                if (count > MAX_BOOKS_MOVES) {
+                    break;
+                }
+            }
+        }
+    }
+    printf("listing books moves\n");
+    for (index = 0; index < count; ++index) {
+        printf("book move #%d ", index + 1);
+        printMove(bookMoves[index]);
+        printf("\n");
+    }
+
+}
+
+int getBookMove() {
+    U64 polyKey = polyKeyFromBoard();
+    printf("polyKey: %llx\n", polyKey);
+    listBookMoves(polyKey);
+    return 0;
+
 }

@@ -37,9 +37,12 @@ void initAll() {
     initDelayTime();
     printf("DELAY_TIME: %d\n",DELAY_TIME);
 
+    // initilizing NNUE file
     initNNUE(NNUE_FILE);
 
-    initPolyBook();
+    // initializing book file
+    IS_USING_BOOK = initPolyBook();
+
 }
 
 /**

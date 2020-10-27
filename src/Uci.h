@@ -30,6 +30,11 @@
 #define LOCAL_DELAY_TIME  50
 
 /**
+ * boolean flag to determine if to use book or not
+ */
+extern int IS_USING_BOOK;
+
+/**
  * set delay time when calculating "time to move" according to play in local machine (in arena) or in online(lichess):
  *      if file of DELAY_CONFIG_FILE_NAME exists, -> DELAY_TIME = ONLINE_DELAY_TIME
  *      else -> LOCAL_DELAY_TIME
