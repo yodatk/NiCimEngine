@@ -1,6 +1,32 @@
 
 #include "Uci.h"
 
+
+/**
+ * Time in milliseconds to reduce from total to make a move to ensure the engine does not lose on time
+ */
+int DELAY_TIME;
+
+/**
+ * set delay time when calculating "time to move":
+ *      if file of DELAY_CONFIG_FILE_NAME exists, -> DELAY_TIME = ONLINE_DELAY_TIME
+ *      else -> LOCAL_DELAY_TIME
+ */
+void initDelayTime() {
+    FILE *f = fopen(DELAY_CONFIG_FILE_NAME, "r");
+
+    DELAY_TIME = (!f) ? 50 : 450;
+    if (f) {
+        // file was found -> activate online time delay
+        DELAY_TIME = ONLINE_DELAY_TIME;
+        fclose(f);
+    }
+    else{
+        DELAY_TIME = LOCAL_DELAY_TIME;
+    }
+}
+
+
 /**
  * Parsing a given move as string to the proper encoded move as Integer
  * @param moveAsString String that represents the move ("e2e4" or "a7a8q")
@@ -185,12 +211,12 @@ void parseGo(char *command) {
 
         // set up timing
         time /= movesToGo;
-        time -= 450;
+        time -= DELAY_TIME;
 
-        if(time < 0){
+        if (time < 0) {
             time = 0;
-            increment -=450;
-            if(increment < 0){
+            increment -= DELAY_TIME;
+            if (increment < 0) {
                 increment = 1;
             }
         }

@@ -23,9 +23,20 @@
 #define MAX_HASH_SIZE 128
 #define MIN_HASH_SIZE 4
 #define DEFAULT_HASH_SIZE 64
-
+#define DELAY_CONFIG_FILE_NAME "ONLINE_TIME_CONFIG.txt"
 #define ENGINE_NAME "NiCim"
 #define VERSION "3.3"
+#define ONLINE_DELAY_TIME 450
+#define LOCAL_DELAY_TIME  50
+
+/**
+ * set delay time when calculating "time to move" according to play in local machine (in arena) or in online(lichess):
+ *      if file of DELAY_CONFIG_FILE_NAME exists, -> DELAY_TIME = ONLINE_DELAY_TIME
+ *      else -> LOCAL_DELAY_TIME
+ */
+void initDelayTime();
+
+extern int DELAY_TIME;
 
 
 /**

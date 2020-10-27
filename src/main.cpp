@@ -12,6 +12,8 @@
 #include "Uci.h"
 
 
+
+
 /**
  * Init all the data that necessary to start the engine loop
  */
@@ -30,6 +32,10 @@ void initAll() {
 
     // init Hash Table with default size value
     initHashTable(DEFAULT_HASH_SIZE);
+    initDelayTime();
+    /////
+    printf("DELAY_TIME: %d\n",DELAY_TIME);
+    //////
     initNNUE(NNUE_FILE);
 }
 
