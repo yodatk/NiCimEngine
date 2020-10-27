@@ -21,7 +21,7 @@
 #define copyBoard()                                                    \
     U64 bitboardsCopy[12], occupanciesCopy[3];                        \
     int sideCopy, enpassantCopy, castleCopy,fiftyRuleCounterCopy;     \
-    memcpy(bitboardsCopy, bitboards, 96);                              \
+    memcpy(bitboardsCopy, bitboardsPieces, 96);                              \
     memcpy(occupanciesCopy, occupancies, 24);                          \
     sideCopy = side, enpassantCopy = enpassant, castleCopy = castle;   \
     fiftyRuleCounterCopy = fiftyRuleCounter;                            \
@@ -32,7 +32,7 @@
  * macro to restore board state from copy
  */
 #define restoreBoard()                                                     \
-    memcpy(bitboards, bitboardsCopy, 96);                              \
+    memcpy(bitboardsPieces, bitboardsCopy, 96);                              \
     memcpy(occupancies, occupanciesCopy, 24);                              \
     side = sideCopy, enpassant = enpassantCopy, castle = castleCopy;       \
     fiftyRuleCounter= fiftyRuleCounterCopy;                               \
@@ -117,7 +117,7 @@ typedef struct {
  *  0 1 2 3 4 5 6 7 8 9 10 11
  *  P,N,B,R,Q,K,p,n,b,r,q ,k
  */
-extern U64 bitboards[12];
+extern U64 bitboardsPieces[12];
 
 /**
  * 3 bitboard to tell occupencies of white pieces, black pieces, and both
@@ -197,33 +197,33 @@ void parseFen(char *fen);
  */
 static inline int isSquareAttacked(int square, int side) {
 
-    if ((side == WHITE) && (pawnAttacks[BLACK][square] & bitboards[P])) {
+    if ((side == WHITE) && (pawnAttacks[BLACK][square] & bitboardsPieces[P])) {
         // if attacked by white pawns as black
         return 1;
     }
-    if ((side == BLACK) && (pawnAttacks[WHITE][square] & bitboards[p])) {
+    if ((side == BLACK) && (pawnAttacks[WHITE][square] & bitboardsPieces[p])) {
         // if attacked by white pawns as black
         return 1;
     }
-    if (knightAttacks[square] & ((side == WHITE) ? bitboards[N] : bitboards[n])) {
+    if (knightAttacks[square] & ((side == WHITE) ? bitboardsPieces[N] : bitboardsPieces[n])) {
         // if attacked by knights
         return 1;
     }
-    if (getBishopAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboards[B] : bitboards[b])) {
+    if (getBishopAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboardsPieces[B] : bitboardsPieces[b])) {
         // if attacked by bishops
         return 1;
     }
-    if (getRookAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboards[R] : bitboards[r])) {
+    if (getRookAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboardsPieces[R] : bitboardsPieces[r])) {
         // if attacked by rooks
         return 1;
     }
-    if (getQueenAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboards[Q] : bitboards[q])) {
+    if (getQueenAttacks(square, occupancies[BOTH]) & ((side == WHITE) ? bitboardsPieces[Q] : bitboardsPieces[q])) {
         // if attacked by bishops
         return 1;
     }
 
 
-    if (kingAttacks[square] & ((side == WHITE) ? bitboards[K] : bitboards[k])) {
+    if (kingAttacks[square] & ((side == WHITE) ? bitboardsPieces[K] : bitboardsPieces[k])) {
         // attacked by kings
         return 1;
     }
@@ -280,7 +280,7 @@ static inline void generateMoves(moves * moveList) {
 
     for (int piece = P; piece <= k; piece++) {
         // goe over each piece's bitboard
-        bitboard = bitboards[piece];
+        bitboard = bitboardsPieces[piece];
 
 
         if (side == WHITE) {

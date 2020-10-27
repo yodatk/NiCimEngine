@@ -7,7 +7,7 @@
 #define NISSIMENGINECPP_BITBOARD_H
 
 /**
- * Shortcut for "unsigned long long" will be used as bitboards
+ * Shortcut for "unsigned long long" will be used as bitboardsPieces
  */
 #define U64 unsigned long long
 

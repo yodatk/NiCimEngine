@@ -5,7 +5,7 @@
  *  0 1 2 3 4 5 6 7 8 9 10 11
  *  P,N,B,R,Q,K,p,n,b,r,q ,k
  */
-U64 bitboards[12];
+U64 bitboardsPieces[12];
 
 /**
  * 3 bitboard to tell occupencies of white pieces, black pieces, and both
@@ -82,7 +82,7 @@ void printBoard() {
             int piece = -1;
             for (int bitboardPiece = P; bitboardPiece <= k; bitboardPiece++) {
                 // printing piece in square if there is any
-                if (getBit(bitboards[bitboardPiece], square)) {
+                if (getBit(bitboardsPieces[bitboardPiece], square)) {
                     // get piece code
                     piece = bitboardPiece;
                 }
@@ -109,7 +109,7 @@ void printBoard() {
  * reset all data of the board to an empty board
  */
 void resetBoard() {
-    memset(bitboards, 0ULL, sizeof(bitboards));
+    memset(bitboardsPieces, 0ULL, sizeof(bitboardsPieces));
     memset(occupancies, 0ULL, sizeof(occupancies));
     side = 0;
     fiftyRuleCounter = 0;
@@ -133,7 +133,7 @@ void parseFen(char *fen) {
                 // checking to parse a piece
                 int piece = convertPiece(*fen);
                 if (piece != -1) {
-                    setBitOn(bitboards[piece], square);
+                    setBitOn(bitboardsPieces[piece], square);
                 }
                 fen++;
             }
@@ -144,7 +144,7 @@ void parseFen(char *fen) {
                 int piece = -1;
                 for (int bb_piece = P; bb_piece <= k; bb_piece++) {
                     // if there is a piece on current square, skip the fiven number
-                    if (getBit(bitboards[bb_piece], square))
+                    if (getBit(bitboardsPieces[bb_piece], square))
                         // get piece code
                         piece = bb_piece;
                 }
@@ -202,11 +202,11 @@ void parseFen(char *fen) {
     }
     // updating occupencies according to al pieces that were loaded, and diffrintiate between white, black, and both
     for (int piece = P; piece <= K; piece++) {
-        occupancies[WHITE] |= bitboards[piece];
+        occupancies[WHITE] |= bitboardsPieces[piece];
     }
 
     for (int piece = p; piece <= k; piece++) {
-        occupancies[BLACK] |= bitboards[piece];
+        occupancies[BLACK] |= bitboardsPieces[piece];
     }
     occupancies[BOTH] |= occupancies[WHITE];
     occupancies[BOTH] |= occupancies[BLACK];
@@ -298,8 +298,8 @@ int makeMove(int move, int moveFlag) {
         int castling = getMoveCastling(move);
 
         // move piece
-        setBitOff(bitboards[piece], sourceSquare);
-        setBitOn(bitboards[piece], targetSquare);
+        setBitOff(bitboardsPieces[piece], sourceSquare);
+        setBitOn(bitboardsPieces[piece], targetSquare);
 
         // hash piece movement
         hashKey ^= pieceKeys[piece][sourceSquare];
@@ -328,8 +328,8 @@ int makeMove(int move, int moveFlag) {
 
             for (int currentPiece = startPiece; currentPiece <= endPiece; currentPiece++) {
                 // searching for captured piece to disable it's hash on hash key, and remove it from board
-                if (getBit(bitboards[currentPiece], targetSquare)) {
-                    setBitOff(bitboards[currentPiece], targetSquare);
+                if (getBit(bitboardsPieces[currentPiece], targetSquare)) {
+                    setBitOff(bitboardsPieces[currentPiece], targetSquare);
                     hashKey ^= pieceKeys[currentPiece][targetSquare];
                     break;
                 }
@@ -341,27 +341,27 @@ int makeMove(int move, int moveFlag) {
             // if handle pawn promotions
             if (side == WHITE) {
                 // erase the pawn  and de-hash it
-                setBitOff(bitboards[P], targetSquare);
+                setBitOff(bitboardsPieces[P], targetSquare);
                 hashKey ^= pieceKeys[P][targetSquare];
             } else {
                 // black
-                setBitOff(bitboards[p], targetSquare);
+                setBitOff(bitboardsPieces[p], targetSquare);
                 hashKey ^= pieceKeys[p][targetSquare];
             }
 
             // set up promoted piece on chess board and hash it
-            setBitOn(bitboards[promotedPiece], targetSquare);
+            setBitOn(bitboardsPieces[promotedPiece], targetSquare);
             hashKey ^= pieceKeys[promotedPiece][targetSquare];
         }
 
         if (enpass) {
             // if handle enpassant captures -> erase the pawn depending on side to move
-            (side == WHITE) ? setBitOff(bitboards[p], targetSquare + 8) : setBitOff(bitboards[P], targetSquare - 8);
+            (side == WHITE) ? setBitOff(bitboardsPieces[p], targetSquare + 8) : setBitOff(bitboardsPieces[P], targetSquare - 8);
             if (side == WHITE) {
-                setBitOff(bitboards[p], targetSquare + 8);
+                setBitOff(bitboardsPieces[p], targetSquare + 8);
                 hashKey ^= pieceKeys[p][targetSquare + 8];
             } else {
-                setBitOff(bitboards[P], targetSquare - 8);
+                setBitOff(bitboardsPieces[P], targetSquare - 8);
                 hashKey ^= pieceKeys[P][targetSquare - 8];
             }
         }
@@ -389,8 +389,8 @@ int makeMove(int move, int moveFlag) {
                 // WHITE castles king side
                 case (G1):
                     // move H rook
-                    setBitOff(bitboards[R], H1);
-                    setBitOn(bitboards[R], F1);
+                    setBitOff(bitboardsPieces[R], H1);
+                    setBitOn(bitboardsPieces[R], F1);
                     // hash rook
                     hashKey ^= pieceKeys[R][H1];
                     hashKey ^= pieceKeys[R][F1];
@@ -398,8 +398,8 @@ int makeMove(int move, int moveFlag) {
                     // WHITE castles queen side
                 case (C1):
                     // move A rook
-                    setBitOff(bitboards[R], A1);
-                    setBitOn(bitboards[R], D1);
+                    setBitOff(bitboardsPieces[R], A1);
+                    setBitOn(bitboardsPieces[R], D1);
 
                     // hash rook
                     hashKey ^= pieceKeys[R][A1];
@@ -409,8 +409,8 @@ int makeMove(int move, int moveFlag) {
                     // BLACK castles king side
                 case (G8):
                     // move H rook
-                    setBitOff(bitboards[r], H8);
-                    setBitOn(bitboards[r], F8);
+                    setBitOff(bitboardsPieces[r], H8);
+                    setBitOn(bitboardsPieces[r], F8);
 
                     // hash rook
                     hashKey ^= pieceKeys[r][H8];
@@ -420,8 +420,8 @@ int makeMove(int move, int moveFlag) {
                     // BLACK castles queen side
                 case (C8):
                     // move A rook
-                    setBitOff(bitboards[r], A8);
-                    setBitOn(bitboards[r], D8);
+                    setBitOff(bitboardsPieces[r], A8);
+                    setBitOn(bitboardsPieces[r], D8);
 
                     // hash rook
                     hashKey ^= pieceKeys[r][A8]; // remove rook from a8 from hash key
@@ -443,11 +443,11 @@ int makeMove(int move, int moveFlag) {
 
         // handle white occupencies
         for (int currentWhitePiece = P; currentWhitePiece <= K; currentWhitePiece++) {
-            occupancies[WHITE] |= bitboards[currentWhitePiece];
+            occupancies[WHITE] |= bitboardsPieces[currentWhitePiece];
         }
 
         for (int currentBlackPiece = p; currentBlackPiece <= k; currentBlackPiece++) {
-            occupancies[BLACK] |= bitboards[currentBlackPiece];
+            occupancies[BLACK] |= bitboardsPieces[currentBlackPiece];
         }
 
         occupancies[BOTH] |= occupancies[WHITE];
@@ -458,7 +458,7 @@ int makeMove(int move, int moveFlag) {
         hashKey ^= sideKey;
 
         // if move is invalid -> restore back to before movement and return invalid move flag
-        if (isSquareAttacked((side == WHITE) ? getLSBIndex(bitboards[k]) : getLSBIndex(bitboards[K]), side)) {
+        if (isSquareAttacked((side == WHITE) ? getLSBIndex(bitboardsPieces[k]) : getLSBIndex(bitboardsPieces[K]), side)) {
             restoreBoard();
             return 0;
         } else {

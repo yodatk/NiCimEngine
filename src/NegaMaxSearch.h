@@ -64,7 +64,7 @@ static inline int negamax(int alpha, int beta, int depth) {
     nodes++;
 
     // checking for checks
-    int isInCheck = isSquareAttacked((side == WHITE) ? getLSBIndex(bitboards[K]) : getLSBIndex(bitboards[k]),
+    int isInCheck = isSquareAttacked((side == WHITE) ? getLSBIndex(bitboardsPieces[K]) : getLSBIndex(bitboardsPieces[k]),
                                      side ^ 1);
 
 

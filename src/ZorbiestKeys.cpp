@@ -64,7 +64,7 @@ U64 generate_hash_key() {
 
     for (int piece = P; piece <= k; piece++) {
         // init piece bitboard copy
-        bitboard = bitboards[piece];
+        bitboard = bitboardsPieces[piece];
 
         // for each piece from current piece type
         while (bitboard) {

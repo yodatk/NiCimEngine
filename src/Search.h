@@ -108,7 +108,7 @@ static inline int scoreMove(int move) {
         }
 
         for (int bb_piece = start_piece; bb_piece <= end_piece; bb_piece++) {
-            if (getBit(bitboards[bb_piece], getMoveTarget(move))) {
+            if (getBit(bitboardsPieces[bb_piece], getMoveTarget(move))) {
                 target_piece = bb_piece;
                 break;
             }
