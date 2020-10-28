@@ -9,7 +9,12 @@
 int IS_USING_BOOK = true;
 
 /**
- * converting pieces to poly pieces for opening book
+ * boolean flag to detemine if to use opening book or not IN ALL GAMES
+ */
+int IS_USING_BOOK_SUDO = true;
+
+/**
+ * Array to convert NiCim pieces type to polyglot pieces
  */
 const int PolyTypeOfPiece[12] = {
         1, 3, 5, 7, 9, 11, 0, 2, 4, 6, 8, 10
@@ -26,7 +31,7 @@ long NUM_OF_ENTRIES;
 BookEntry *entries;
 
 /**
- * array to convert squares value to NNUE evaluation of stockfish
+ * Array to convert NiCim Squares to polyglot squares
  */
 int reversedSquares[64] = {
         A1, B1, C1, D1, E1, F1, G1, H1,
@@ -104,7 +109,7 @@ U64 polyKeyFromBoard() {
 
 
 /**
- * init Entries in book
+ * init Entries in book into memory
  */
 int initPolyBook() {
     FILE *bookFile = fopen(NAME_OF_BOOK, "rb");
@@ -202,8 +207,8 @@ int convertPolyMoveToNiCimMove(unsigned short move) {
 }
 
 /**
- * listing all the moves option from the given polykey
- * @param polkey U64 number which is a hashed move key
+ * get random move from opening book for current situation. if no move available, return 0
+ * @return int represents an encoded move from book. if not available, return 0
  */
 int getBookMove() {
     BookEntry *entry;

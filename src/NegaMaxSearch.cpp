@@ -27,10 +27,13 @@ void searchPosition(int depth) {
     int beta = INFINITY;
 
 
-    if (IS_USING_BOOK) {
+    if (IS_USING_BOOK && IS_USING_BOOK_SUDO) {
         int bestMove = getBookMove();
         if (bestMove != 0) {
             pvTable[0][0] = bestMove;
+        }
+        else{
+            IS_USING_BOOK = false;
         }
     }
 

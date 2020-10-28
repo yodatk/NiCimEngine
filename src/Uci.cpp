@@ -141,6 +141,10 @@ void parsePosition(char *command) {
             currentChar++;
         }
     }
+    else{
+        // if moves is not found -> new game\position, turn book move on again
+        IS_USING_BOOK = true;
+    }
     printBoard();
 }
 

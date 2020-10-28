@@ -15,6 +15,9 @@
 
 #include "Board.h"
 
+/**
+ * Array of all relevant hashKeys to read from polyglot books
+ */
 extern const U64 Random64Poly[781];
 
 

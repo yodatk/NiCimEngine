@@ -41,7 +41,8 @@ void initAll() {
     initNNUE(NNUE_FILE);
 
     // initializing book file
-    IS_USING_BOOK = initPolyBook();
+    IS_USING_BOOK_SUDO = initPolyBook();
+    IS_USING_BOOK = IS_USING_BOOK_SUDO;
 
 }
 
