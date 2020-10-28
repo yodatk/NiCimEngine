@@ -20,6 +20,7 @@ IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written
     - Razoring (https://www.chessprogramming.org/Razoring)
  * NNUE Evaluation! (by https://github.com/dshawul/nnue-probe)
  * Transposition Table (https://www.chessprogramming.org/Transposition_Table)
+ * Opening Book support
 
 
 ## Thanks A Lot to these Wonderful guides: 
