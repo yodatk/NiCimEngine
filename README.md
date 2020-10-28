@@ -1,4 +1,5 @@
 # NiCim Engine
+![alt text](https://github.com/yodatk/NiCimEngine/blob/master/resources/NiCim_Logo_Small.png?raw=true)
 
 IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written in C++.
 
@@ -27,4 +28,4 @@ IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written
 
 ## Additional Credits and Thanks:
 - Noga Regev for the AMAZING artwork of Nicim Icon. 
-![alt text](https://github.com/yodatk/NiCimEngine/blob/master/resources/NiCim_Logo.png?raw=true)
+
