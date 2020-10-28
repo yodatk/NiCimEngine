@@ -1,4 +1,5 @@
 # NiCim Engine
+![alt text](https://github.com/yodatk/NiCimEngine/blob/master/resources/NiCim_Logo_Small.png?raw=true)
 
 IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written in C++.
 
@@ -19,6 +20,7 @@ IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written
     - Razoring (https://www.chessprogramming.org/Razoring)
  * NNUE Evaluation! (by https://github.com/dshawul/nnue-probe)
  * Transposition Table (https://www.chessprogramming.org/Transposition_Table)
+ * Opening Book support
 
 
 ## Thanks A Lot to these Wonderful guides: 
@@ -27,4 +29,4 @@ IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written
 
 ## Additional Credits and Thanks:
 - Noga Regev for the AMAZING artwork of Nicim Icon. 
-![alt text](https://github.com/yodatk/NiCimEngine/blob/master/resources/NiCim_Logo.png?raw=true)
+
