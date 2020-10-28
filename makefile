@@ -3,9 +3,9 @@ CXXFLAGS = -Ofast -fomit-frame-pointer -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 
 
 OBJECTS = bin\main.o bin\Uci.o bin\NegaMaxSearch.o bin\Attacks.o bin\Squares.o bin\Board.o bin\Evaluation.o bin\TimeController.o bin\RandomNumbers.o bin\Bitboard.o bin\ZorbiestKeys.o bin\MagicNumbers.o bin\PerftTest.o bin\Search.o bin\TranspositionTable.o bin\Pieces.o bin\nnue\misc.o bin\nnue\nnue.o bin\NnueEval.o bin\PolyKeys.o bin\PolyBook.o bin\resources\resources.o
 
-all: bin\NiCim.exe
+all: bin\NiCimEngine.exe
 
-bin\NiCim.exe : $(OBJECTS)
+bin\NiCimEngine.exe : $(OBJECTS)
 	$(CXX) -Ofast -fomit-frame-pointer -DUSE_SSE41 -msse4.1 -DUSE_SSSE3 -mssse3 -DUSE_SSE2 -msse2 -DUSE_SSE -msse -g -Wall  -static-libstdc++ -static-libgcc -o $@ $^
 
 bin\resources\resources.o: resources\resources.rc
