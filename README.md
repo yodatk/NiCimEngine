@@ -23,9 +23,9 @@ IMPROVED 3rd version of Nissim engine: NiCim. Working with UCI protocol. Written
  * Opening Book support with polyglot format. (as described in this toturial: https://www.youtube.com/watch?v=HjZtevzCa5Y&list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg&index=88&ab_channel=BluefeverSoftware)
  
  ## How to install and Use NiCim:
- currently, NiCim can compile only to windows machines. there are two ways to compile niCim:
+ There are two ways to compile NiCim:
   * you can use Cmake with the provided CMakeLists.txt file. (really easy to do with CLion)
-  * you can use the provided makefile.
+  * you can use the provided makefile. currently, the makefile supports only windows machines.
  ### IMPORTANT NOTES:
    * NiCim executable must be next to the provided .nnue file, otherwise, it's evaluation won't work. 
    * NiCim can support polyglot format opening books, and provided by one. if you wish to change the book you need to chage the default NAME_OF_BOOK in "PolyBook.h". If you with to turn off this option, you can through the uci protocol.
