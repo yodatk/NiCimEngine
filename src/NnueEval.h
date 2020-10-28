@@ -7,6 +7,11 @@
 
 #include "./nnue/nnue.h"
 
+#define NNUE_FILE "nn-eba324f53044.nnue"
+/**
+ * Flag To Determine if NNUE is Present or not
+ */
+extern int IS_NNUE;
 
 /**
  * initial NNUE for evalutaion

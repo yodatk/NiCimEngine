@@ -7,7 +7,6 @@
 #include "Board.h"
 #include "NnueEval.h"
 
-#define NNUE_FILE "nn-eba324f53044.nnue"
 
 /**
  * enum for game phases to flexible evaluation
@@ -174,7 +173,7 @@ static inline int getGamePhaseScore() {
         whitePieceScores += countBits(bitboardsPieces[piece]) * materialScore[OPENING][piece];
     }
 
-    // counting black officsers
+    // counting black officers
     for (int piece = n; piece <= q; piece++) {
         blackPieceScores += countBits(bitboardsPieces[piece]) * -materialScore[OPENING][piece];
     }
@@ -183,10 +182,10 @@ static inline int getGamePhaseScore() {
 }
 
 /**
- * Evaluate current position on board according to pieces value and pieces position
+ * Evaluate current position on board according to pieces value and pieces position according to the NNUE
  * @return score of the current board
  */
-static inline int evaluate() {
+static inline int evaluateNNUE() {
     U64 bitboard;
 
     int piece, square;
@@ -228,10 +227,11 @@ static inline int evaluate() {
     squares[index] = 0;
 
     // evaluating with NNUE, with fifty move rule considiration
-    return (evaluateNNUE(side, pieces, squares) * (100-fiftyRuleCounter)/100);
+    return (evaluateNNUE(side, pieces, squares) * (100 - fiftyRuleCounter) / 100);
 }
 
-static inline int evaluateOnLowTime() {
+
+static inline int evaluateWithoutNNUE() {
     // get game phase score
     int gamePhaseScore = getGamePhaseScore();
 
@@ -496,5 +496,15 @@ static inline int evaluateOnLowTime() {
     // return final evaluation based on side
     return (side == WHITE) ? score : -score;
 }
+
+
+/**
+ * Evaluate current position on board according to pieces value and pieces position
+ * @return score of the current board
+ */
+static inline int evaluate() {
+    return IS_NNUE ? evaluateNNUE() : evaluateWithoutNNUE();
+}
+
 
 #endif //NISSIMENGINECPP_EVALUATION_H
